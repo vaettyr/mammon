@@ -1,0 +1,41 @@
+{"Committee":[
+	{"Name":"Committee Information","Type":"flat","Base":true,"Contents":[
+		{"Name":"Year","Type":"select","Options":"Years","Base":true},
+		{"Name":"Name","Type":"text","Base":true},
+		{"Name":"Address","Type":"address","Base":true},
+		{"Name":"Phone","Type":"phone","Base":true},
+		{"Name":"Email","Type":"email","Base":true}
+	]},
+	{"Name":"Officers","Type":"list","Base":true,"Contents":[
+		{"Name":"OfficerType","Type":"select","Options":"OfficerType","Base":true},
+		{"Name":"Name","Type":"name","Base":true},
+		{"Name":"Email","Type":"email","Base":true},
+		{"Name":"Address","Type":"address","Base":true},
+		{"Name":"Phone","Type":"phone","Base":true}	
+	]}],
+"Candidate" :[
+	{"Name":"Office Information", "Type":"flat", "Base":true, "Contents":[
+		{"Name":"Office","Type":"Office","Base":true},
+		{"Name":"Election","Type":"select","Options":"Election","Base":true}
+	]},
+	{"Name":"Candidate Information", "Type":"flat", "Base":true, "Contents":[
+		{"Name":"Name","Type":"text","Base":true},
+		{"Name":"Address","Type":"address","Base":true},
+		{"Name":"Phone","Type":"phone","Base":true},
+		{"Name":"Email","Type":"email","Base":true},
+		{"Name":"Has Committee","Type":"checkbox"}
+	]},	
+	{"Name":"Committee Information","Type":"flat","Base":true,"Contents":[
+		{"Name":"Name","Type":"text","Base":true},
+		{"Name":"Address","Type":"address"},
+		{"Name":"Phone","Type":"phone"},
+		{"Name":"Email","Type":"email"}
+	]},
+	{"Name":"Officers","Type":"list","Base":true,"Contents":[
+		{"Name":"OfficerType","Type":"select","Options":"OfficerType","Base":true},
+		{"Name":"Name","Type":"name","Base":true},
+		{"Name":"Email","Type":"email","Base":true},
+		{"Name":"Address","Type":"address","Base":true},
+		{"Name":"Phone","Type":"phone","Base":true}	
+	]}
+]}
