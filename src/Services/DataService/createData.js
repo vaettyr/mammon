@@ -1,6 +1,9 @@
 import * as actions from 'Store/actionTypes';
 import * as http from 'axios';
-import { structureToString, dataToString, structureFromString, dataFromString } from './util';
+import { structureToString, structureFromString, serializeData, deserializeData } from './util';
+
+
+const serializeParameters = ["Data", "Actions", "Parameters"];
 
 const createData = (uri = 'DataService.php', table, alias, data, query, callback) => {
 	return (dispatch, getState) => {
@@ -9,7 +12,7 @@ const createData = (uri = 'DataService.php', table, alias, data, query, callback
 			table: alias,
 			source: table
 		});
-		data = dataToString(structureToString(data));
+		data = serializeData(structureToString(data), serializeParameters);
 		if(query) {
 			query = Object.keys(query).map(i => "&"+i+"="+query[i]).join('');
 		}
@@ -18,7 +21,7 @@ const createData = (uri = 'DataService.php', table, alias, data, query, callback
 			dispatch({
 				type: actions.CREATE_DATA_END,
 				table: alias,
-				data: dataFromString(structureFromString(response.data))
+				data: deserializeData(structureFromString(response.data), serializeParameters)
 			});
 			if(callback) {callback(response);}
 		})

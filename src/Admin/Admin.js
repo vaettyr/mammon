@@ -22,6 +22,9 @@ import Roles from './Pages/Roles/Roles';
 import Jurisdictions from './Pages/Jurisdictions/Jurisdictions';
 import CommitteeTypes from './Pages/CommitteeTypes/CommitteeTypes';
 import OfficerTypes from './Pages/OfficerTypes/OfficerTypes';
+import Forms from './Pages/Forms/Forms';
+import FilingSchedules from './Pages/FilingSchedules/FilingSchedules';
+import FilingCycles from './Pages/FilingCycles/FilingCycles';
 
 import NavMenu from 'Components/NavMenu';
 import LoginService from 'Auth/Pages/Login/Login';
@@ -60,6 +63,7 @@ class Admin extends Component {
 		
 		this.url = this.props.computedMatch.url;
 		
+		//manage and maintain are the other two primary areas
 		this.configure = [
 			{display:"Options", path:`${this.url}/Options`, permission:"Lookup|LookupType"},
 			{display: "Offices", path:`${this.url}/Offices`, permission:"Office"},
@@ -67,13 +71,22 @@ class Admin extends Component {
 			{display: "Jurisdictions", path:`${this.url}/Jurisdictions`, permission:"JurisdictionType|Jurisdiction"},
 			{display: "Committee Types", path:`${this.url}/CommitteeTypes`, permission:"CommitteeType"},
 			{display: "Officer Types", path:`${this.url}/OfficerTypes`, permission:"OfficerType"},
-			{display: "Filing Schedules", path:"", permission:"FilingSchedule"},
+			{display: "Forms", path:`${this.url}/Forms`, permission:"Form"},
+			{display: "Filing Schedules", path:`${this.url}/FilingSchedules`, permission:"FilingSchedule"},
 			{display: "Transactions", path:"", permission:"TransactionType"},
-			{display: "Reports", path:"", permission:"Report"},
+			{display: "Reports", path:"", permission:"Report"}, //defines the content of a financial report and not the form itself
 			{display: "Notifications", path:"", permission:"Notification"},
 			{display: "Fees", path:"", permission:"Fee"},
 			{display: "Environment", path:"", permission:"Environment"}
 		]
+		
+		this.manage = [
+			{display:"Filing Cycles", path:`${this.url}/FilingCycles`, permission:"FilingCycle"}
+		];
+		
+		this.maintain = [
+			{display:"Pending Registrations", path:`${this.url}/PendingRegistrations`, permission:"Registrations"}
+		];
 		
 		let p_reducer = persistReducer({key: 'mammon', storage, whitelist: ['data']}, reducer);
 		this.store = createStore(p_reducer, applyMiddleware(...middlewares));
@@ -127,10 +140,16 @@ class Admin extends Component {
 						      			</Typography>
 						      			{ !this.props.computedMatch.isExact && <Typography className={this.props.classes.margin} type="subheading" color="inherit">{this.props.location.pathname.replace(this.props.computedMatch.path+"/", "")}</Typography>}
 						      			<span className={this.props.classes.flex}></span>
-						      			
+						      			<PermissionItem permission="Maintain">
+						      				<NavMenu id="mainMenu" color="inherit" content={this.maintain} displayName="Maintain" />
+						      			</PermissionItem>
+						      			<PermissionItem permission="Manage">
+						      				<NavMenu id="manMenu" color="inherit" content={this.manage} displayName="Manage" />
+						      			</PermissionItem>
 						      			<PermissionItem permission="Configure">
 						      				<NavMenu id="conMenu" color="inherit" content={this.configure} displayName="Configure" />
 						      			</PermissionItem>
+						      			
 					      				<ActiveUser />
 	
 						      		</Toolbar>
@@ -141,7 +160,10 @@ class Admin extends Component {
 				      			<PermissionRoute path={`${this.url}/Jurisdictions`} component={Jurisdictions} permission="Jurisdiction|JurisdictionType"/>
 					      		<PermissionRoute path={`${this.url}/CommitteeTypes`} component={CommitteeTypes} permission="CommitteeType"/>
 					      		<PermissionRoute path={`${this.url}/OfficerTypes`} component={OfficerTypes} permission="OfficerType"/>
-			      				<LoginService/>
+					      		<PermissionRoute path={`${this.url}/Forms`} component={Forms} permission="Form"/>
+					      		<PermissionRoute path={`${this.url}/FilingSchedules`} component={FilingSchedules} permission="FilingSchedule"/>
+				      			<PermissionRoute path={`${this.url}/FilingCycles`} component={FilingCycles} permission="FilingCycle"/>
+				      			<LoginService/>
 				      			<DeleteDialog />
 					      	</div>
 				      	</MuiThemeProvider>

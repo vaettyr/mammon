@@ -16,18 +16,36 @@ const structureFromString = (data) => {
 	});
 	return {...data, Structure: Structure};
 }
-const dataToString = (data) => {
-	if(!data.Data) {
-		return data;
-	}
-	return {...data, Data:JSON.stringify(data.Data)};
+const serializeData = (data, keys) => {
+	if(!keys) { return data; }
+	let serialized = {...data};
+	keys.forEach((key) => {
+		if(data[key]) {
+			try {
+				serialized = {...serialized, [key]: JSON.stringify(data[key])};
+			} catch(e) {
+				serialized = {...serialized, [key]:e};
+			}
+		}		
+	});
+	return serialized;
 }
-const dataFromString = (data) => {
-	if(!data.Data) 
-		return data;
-	return {...data, Data: JSON.parse(data.Data)};
+
+const deserializeData = (data, keys) => {
+	if(!keys) { return data; }
+	let deserialized = {...data};
+	keys.forEach((key) => {
+		if(data[key]) {
+			try {
+				deserialized = {...deserialized, [key]: JSON.parse(data[key])};
+			} catch(e) {
+				deserialized = {...deserialized, [key]: e};
+			}		
+		}
+	});
+	return deserialized;
 }
 export { structureToString };
 export { structureFromString };
-export { dataToString };
-export { dataFromString };
+export { serializeData };
+export { deserializeData };

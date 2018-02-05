@@ -49,8 +49,7 @@ const types = [
 	{Name: "Email", Type: "email"},
 	{Name: "Phone", Type: "phone"},
 	{Name: "Name (Person)", Type:"name"},
-	{Name: "Option", Type:"reference"},
-	{Name: "Officer Type", Type:"OfficerType"},
+	{Name: "Select", Type:"select"},
 	{Name: "Office", Type: "office"}
 ];
 
@@ -66,11 +65,11 @@ class ConditionalStructure extends Component {
 					<Field type="text" model={model('Name', index)} form={form} 
 						label="Name" required unique={value.filter((v,i)=>i!==index).map(c=>c.Name)} onChange={onChange}/>
 					<Field type="select" model={model('Type', index)} form={form}
-						label="Type" required onChange={onChange} classes={{root: classes.menu}}>
+						label="Type" required onChange={onChange}>
 							{types.map((type, i) => (<MenuItem key={i} value={type.Type}>{type.Name}</MenuItem>))}
 					</Field>
-					{item.Type === "reference" && <Field type="select" 
-						model={model('LookupType', index)} form={form} label="Option Type"
+					{item.Type === "select" && <Field type="select" 
+						model={model('Options', index)} form={form} label="Options"
 						required onChange={onChange}>
 						{options && options.map((o, i) => (
 							<MenuItem key={i} value={o.ID}>{o.Name}</MenuItem>
@@ -78,7 +77,7 @@ class ConditionalStructure extends Component {
 				</Form>}
 				{item.Base && <span className={classes.row}>
 					<Typography type='subheading' className={classes.Name}>{item.Name}</Typography>
-					<Typography type="subheading" className={classes.Type}>{types.find(t=> t.Type === item.Type).Name}</Typography>
+					{types.some(t => t.Type === item.Type) && <Typography type="subheading" className={classes.Type}>{types.find(t=> t.Type === item.Type).Name}</Typography>}
 				</span>}
 				<span className={classes.grow}></span>
 				{item.Conditions && <Tooltip title="Has Conditions" className={classes.flag}><FlagIcon /></Tooltip>}

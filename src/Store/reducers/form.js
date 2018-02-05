@@ -41,11 +41,33 @@ export const form = (state = {}, action) => {
 				comp[action.form]);
 		return comp;
 		//return {...state, [action.form]:{...sub, [action.key]:[...(sub[action.key]?sub[action.key]:[]), action.item]}}
+	case actions.FORM_LIST_INSERT:
+		action.key.replace(/\[(\w+)\]/g, '.$1').split('.')
+			.reduce((root, prop, index, list) => {
+				if(index === list.length-1) {				
+					if (Array.isArray(root[prop])) {
+						root[prop].splice(action.index+1, 0, action.item);
+					} else {
+						root[prop] = [action.item];
+					} 			
+					return undefined;
+				} else {
+					if(!root[prop]) {
+						root[prop] = {};
+					}
+					return root[prop];
+				}}, 
+				comp[action.form]);
+		return comp;
 	case actions.FORM_LIST_REMOVE:
 		action.key.replace(/\[(\w+)\]/g, '.$1').split('.')
 		.reduce((root, prop, index, list) => {
 			if(index === list.length-1) {
-				root[prop] = [...root[prop].slice(0, action.index), ...root[prop].slice(action.index+1)];
+				if(root[prop][action.index].ID === undefined && !action.soft) {
+					root[prop] = [...root[prop].slice(0, action.index), ...root[prop].slice(action.index+1)];
+				} else {
+					root[prop] = [{...root[prop][action.index], DELETE:true}, ...root[prop].slice(0, action.index), ...root[prop].slice(action.index+1)];
+				}				
 				return undefined;
 			} else {
 				if(!root[prop]) {

@@ -67,7 +67,7 @@ class Permissions extends Component {
 				</ListItemSecondaryAction>
 			</ListItem>
 			{sub.length > 0 && <Collapse in={this.expanded(expanded, depth, index)} transitionDuration="auto"> 
-				{sub.sort((a,b) => a.DisplayOrder < b.DisplayOrder ? -1: 1).map((p,i) => this.renderPermission(p, i, depth+1, permissions, rolepermissions, !hasPermission||parentDisabled))}
+				{sub.sort((a,b) => parseInt(a.DisplayOrder, 10) < parseInt(b.DisplayOrder, 10) ? -1: 1).map((p,i) => this.renderPermission(p, i, depth+1, permissions, rolepermissions, !hasPermission||parentDisabled))}
 			</Collapse>}
 		</span>);
 	}

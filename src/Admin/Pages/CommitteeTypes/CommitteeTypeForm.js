@@ -32,7 +32,8 @@ import withDataService from 'Services/DataService';
 const style = (theme) => ({
 	paper: {
 		margin:10,
-		padding:10
+		padding:10,
+		minWidth:"40%"
 	},
 	form: {
 		display: '-webkit-flex',
@@ -94,10 +95,16 @@ class CommitteeTypeForm extends Component {
 	}
 	
 	render() {
-		let { classes, options, data, collapsible, menu, valid, errors, saveType } = this.props;
+		let { classes, options, data, collapsible, menu, valid, errors, saveType, publishType, deleteType } = this.props;
 		return (<Paper className={classes.paper}>
 			<Form className={classes.form} form="CommitteeType">				
-				<Field model="Name" type="text" label="Name" required/>
+				<div className={classes.itemRow}>
+					<Form form="CommitteeType" nested><Field model="Name" type="text" label="Name" required/></Form>
+					{data.VERSION && <span>v{data.VERSION}</span>}
+					<span className={classes.spacer}></span>				
+					{data.LOCKED && <span>Published</span>}
+					{!data.LOCKED && <span>Un-published</span>}
+				</div>
 				{data.Structure && data.Structure.map((section, index) => (
 					<span key={index}>	
 						<div className={classes.itemRow}>
@@ -140,6 +147,9 @@ class CommitteeTypeForm extends Component {
 					filter={(item) => true}
 					replace={[[/Structure\[(\d+)\]/g, (match, i) => 'Section "' + (data.Structure[i].Name || (parseInt(i, 10)+1)) +'" '],[/[[\]]/g," "],[/\./g,''],[/Contents/g, "Item"]]}>
 					<Button raised color="primary" disabled={valid} onClick={()=>{saveType(data)}}>Save</Button>
+					{data.ID && <Button raised color="primary" disabled={valid||data.LOCKED} onClick={()=>{publishType(data, true)}}>Publish</Button>}
+					{data.LOCKED && <Button rasied color="primary" onClick={()=>{publishType(data, false)}}>Un-publish</Button>}
+					{!data.LOCKED && <Button raised color="primary" onClick={()=>{deleteType(data)}}>{data.VERSION>1?"Revert":"Delete"}</Button>}
 				</ErrorTip>
 				
 			</Form>			
@@ -147,20 +157,34 @@ class CommitteeTypeForm extends Component {
 	}
 }
 
-const onSave = (data, props) => {
+const onSave = (data, props, callback) => {
 	return function(dispatch, getState) {
 		if(data.ID === undefined) {
 			props.createData("CommitteeType", "CommitteeTypes", data, undefined, function(response) {
-				debugger;
+				if(callback) {
+					callback(response, dispatch);
+				}
+				dispatch({type: actions.FORM_SET_VALUES, form: "CommitteeType", values: {...data, LOCKED: response.data.LOCKED, ID: response.data.ID, VERSION: response.data.VERSION}});
 				//clear form and deselect?
 			});
 		} else {
 			props.saveData("CommitteeType", data, undefined, function(response) {
-				debugger;
+				if(callback) {
+					callback(response, dispatch);
+				}
+				if(response.data && response.data.length) {
+					dispatch({type: actions.FORM_SET_VALUES, form: "CommitteeType", values: {...data, LOCKED: response.data[0].LOCKED, VERSION: response.data[0].VERSION}});
+				}
 				//clear form and deselect?
 			});
 		}
 	}
+}
+
+const onPublish = (data, lock, props) => {
+	return onSave({...data, LOCKED: lock}, props, (response, dispatch) => {
+		dispatch({type: actions.FORM_SET_VALUE, form: "CommitteeType", key:"LOCKED", value: true});
+	});
 }
 
 const mapState = (state, ownProps) => ({
@@ -191,6 +215,7 @@ const mapDispatch = (dispatch, ownProps) => { return {
 	removeRelation: (key) => dispatch({type: actions.FORM_SET_VALUE, form:"CommitteeType", key:key, value: undefined}),
 	removeItem: (index, model) => dispatch({type:actions.FORM_LIST_REMOVE, index: index, form: "CommitteeType", key: model}),
 	moveItem: (index, model, direction) => dispatch({type:actions.FORM_LIST_SORT, key: model, form: "CommitteeType", from:index, to:index+direction}),
-	saveType: (data) => dispatch(onSave(data, ownProps))
+	saveType: (data) => dispatch(onSave(data, ownProps)),
+	publishType: (data) => dispatch(onPublish(data, ownProps))
 }}
 export default withDataService()(withMenu("CommitteeType")(withCollapsible("CommitteeType")(connect(mapState, mapDispatch)(withStyles(style)(CommitteeTypeForm)))));

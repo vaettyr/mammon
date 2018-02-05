@@ -35,10 +35,14 @@ const style = (theme) => ({
 
 class index extends Component {
 	componentDidMount() {
-		this.props.getData("CommitteeType", "CommitteeTypes");
-		//get officer types and all options
-		this.props.getData("OfficerType", "OfficerTypes");
-		this.props.getData("Lookup", "Options");
+		let batch = [
+			{table: "CommitteeType", alias: "CommitteeTypes"},
+			{table: "OfficerType", alias: "OfficerTypes"},
+			{table: "Lookup", alias: "Options"},
+			{table: "Office", alias: "Offices"},
+			{table: "Jurisdiction", alias: "Jurisdictions"},
+		];
+		this.props.getBatchData(batch);
 		this.props.setForm({});
 	}
 	formatModel(model, root) {
@@ -54,7 +58,7 @@ class index extends Component {
 	}
 	render() {
 		let { registration, data, classes, editListItem, removeListItem, openListItem, closeListItem, listType, lineData, saveLineItem,
-				menu, officertypes, callback, options, valid, errors, lineErrors, lineValid, saveRegistration, createData } = this.props;
+				menu, officertypes, callback, options, valid, errors, lineErrors, lineValid, saveRegistration, createData, Offices, Jurisdictions } = this.props;
 		return <Paper className={classes.registrationform}>
 			<Form form="Registration"> 
 				{registration && <Typography type="display1" color="primary">{registration.Name} Registration</Typography>}
@@ -62,7 +66,7 @@ class index extends Component {
 					
 					<Conditions key={index} className={classes.section} structure={registration.Structure}
 						model={this.formatModel(section.Name)}>
-						<RegistrationSection section={section} registration={registration} data={data} menu={menu} editListItem={editListItem}/>						
+						<RegistrationSection section={section} registration={registration} Offices={Offices} Jurisdictions={Jurisdictions} data={data} menu={menu} editListItem={editListItem}/>						
 					</Conditions>
 				))}
 			</Form>

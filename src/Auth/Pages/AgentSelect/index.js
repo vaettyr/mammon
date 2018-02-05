@@ -23,7 +23,7 @@ class Agents extends Component {
 	
 	render() {
 		return (
-			<Dialog open={this.props.open} onRequestClose={() => {this.props.onRequestClose(this.props.history)}}>
+			<Dialog open={this.props.open} onClose={() => {this.props.onRequestClose(this.props.history)}}>
 				<DialogTitle>Choose Account</DialogTitle>
 				<DialogContent className={this.props.classes.container}>
 				<List>

@@ -21,6 +21,8 @@ import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 
 import * as validator from 'Services/Validation';
+import { ChromePicker } from 'react-color'
+import { DatePicker } from 'material-ui-pickers';
 
 //gets our value from a combination of the 'form' prop passed in and our 'model' prop
 //should bind the passed-in onChange handler
@@ -63,6 +65,17 @@ const style = (theme) => ({
 	},
 	help: {
 		color: theme.palette.primary['200']
+	},
+	wrap: {
+		flexWrap: 'wrap',
+		alignItems: 'center'
+	},
+	swatch: {
+		minWidth: 45,
+		minHeight: 45,
+		marginLeft: theme.spacing.unit * 2,
+		borderRadius: 5,
+		boxShadow: "0px 1px 2px 0px grey"
 	}
 });
 
@@ -90,14 +103,30 @@ class ZipField extends Component {
 class Field extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {suggestions:[]};
+		this.state = {suggestions:[], showPicker:false};
 		this.setSuggestions = this.setSuggestions.bind(this);
+		this.setShowPicker = this.setShowPicker.bind(this);
+		this.handleSuffix = this.handleSuffix.bind(this);
 	}
 	setSuggestions(suggestions) {
 		this.setState({suggestions: suggestions})
 	}
-	handleChange(model, value, validators, onChange) {
+	setShowPicker(show) {
+		this.setState({showPicker: show});
+	}
+	handleSuffix (suffix, value, empty) {
+		if(suffix) {
+			value =  value.toString().replace(suffix, '');
+		}
+		if(empty) {
+			value = value.toString().replace(empty, '');
+		}
+		return value;
+	}
+	handleChange(model, value, validators, onChange, suffix, empty) {
 		let valid = validator.valid(validators)(value);
+		if(value && suffix) { value = value+suffix; }
+		if(!value && empty) { value = empty; }
 		onChange(model, value, valid);
 	}
 	componentDidUpdate(lastProps) {
@@ -146,12 +175,12 @@ class Field extends Component {
 	}
 	render() {
 		let {type, onChange, model, dispatch, classes, error, initialize, 
-			required, unique, options, helpText, hidden, ...rest} = this.props;
+			required, unique, options, helpText, hidden, suffix, empty, ...rest} = this.props;
 		let helper = helpText?<Tooltip title={helpText} className={classes.help}><HelpIcon/></Tooltip>:null;
 		switch(type) {	
 		case 'checkbox':
 			return (<span className={classes.block}><FormControlLabel control={<Checkbox onChange={(event) => this.handleChange(model, event.target.checked?1:-1, {}, onChange)}
-				checked={this.props.value===1} {...rest} value={this.props.value.toString()}/>} label={this.props.label}/>{helper}</span>);
+				checked={this.props.value===1||this.props.value===true} {...rest} value={this.props.value.toString()}/>} label={this.props.label}/>{helper}</span>);
 		case 'select':
 			let option = options ? options.map((o) => ({value: (o.value || o.Value || o.ID), disabled: o.disabled})) : false;
 			//validate options
@@ -163,6 +192,13 @@ class Field extends Component {
 				</Select>
 				<InputLabel htmlFor={model}>{this.props.label}</InputLabel>
 				{error.isValid && <FormHelperText className={classes.errorText}>{error.error}</FormHelperText>}</FormControl>
+				{helper}</span>);
+		case 'date':
+			return(<span className={classes.block}>
+				
+				<DatePicker onChange={(date)=>{this.handleChange(model, date, {required}, onChange)}}
+				value={this.props.value||''} invalidLabel="" format={this.props.format||'MM[/]DD[/]YYYY'} error={error.isValid} {...rest}/>
+				{error.isValid && <FormHelperText className={classes.errorText}>{error.error}</FormHelperText>}
 				{helper}</span>);
 		case 'phone':
 			return(<span className={classes.block}><FormControl className={classes.formControl}>
@@ -283,6 +319,20 @@ class Field extends Component {
 					onSuggestionsClearRequested={()=> this.setSuggestions([])}
 					getSuggestionValue={(item)=>{return item;}}
 					theme={{suggestionsList:{listStyleType: 'none', margin: 0, padding: 0}}}/>{helper}</span>)
+		case 'color':
+			return (<span className={[classes.block, classes.wrap].join(' ')}>
+						<InputLabel>{this.props.label}</InputLabel>
+						<span className={classes.swatch} style={{backgroundColor: this.props.value}} onClick={(e)=>this.setShowPicker(!this.state.showPicker)}/>
+						{this.state.showPicker && <ChromePicker color={this.props.value} disableAlpha={true} onChangeComplete={(color, event) => { this.handleChange(model, color.hex, {required}, onChange)}}/>}
+					</span>);
+		case 'number':
+			return (<span className={classes.block}><FormControl className={[classes.formControl, this.props.priority ? classes.grow: ''].join(' ')}>
+				<InputLabel htmlFor={model}>{this.props.label}</InputLabel>
+				<Input id={model} type='number' 
+					onChange={(event) => { this.handleChange(model, event.target.value, {required, unique}, onChange, suffix, empty)}} 
+				error={error.isValid} {...rest} value={this.handleSuffix(suffix, this.props.value, empty)}/>
+				{error.isValid && <FormHelperText className={classes.errorText}>{error.error}</FormHelperText>}
+				</FormControl>{helper}</span>);
 		default:
 			return (<span className={classes.block}><FormControl className={[classes.formControl, this.props.priority ? classes.grow: ''].join(' ')}>
 				<InputLabel htmlFor={model}>{this.props.label}</InputLabel>

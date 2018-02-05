@@ -4,10 +4,10 @@ import * as http from 'axios';
 // no alias needed. no index needed
 // const deleteData = (table, alias, data, index, callback, postponeClean,
 // force) => {
-const deleteData = (uri, table, data, callback, postponeClean, force) => {
+const deleteData = (uri = "DataService.php", table, data, callback, postponeClean, force) => {
 	var call = deleteData;
 	return (dispatch, getState) => {
-		dispatch({type: actions.CACHE_PUSH, action: (hard) => { dispatch(call(table, data, callback, postponeClean, hard))}});				
+		dispatch({type: actions.CACHE_PUSH, action: (hard) => { dispatch(call(uri, table, data, callback, postponeClean, hard))}});				
 		dispatch({
 			type: actions.DELETE_DATA_START,
 			source: table

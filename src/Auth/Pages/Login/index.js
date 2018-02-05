@@ -44,7 +44,7 @@ class index extends Component {
 	
 	render() {
 		return (
-			<Dialog open={this.props.open} onRequestClose={() => {this.props.onRequestClose(this.props.history)}}>
+			<Dialog open={this.props.open} onClose={() => {this.props.requestClose(this.props.history)}}>
 				<DialogTitle>Sign In</DialogTitle>
 				<DialogContent className={this.props.classes.container}>
 					<TextField id="username" label="User Name" className={this.props.classes.textField}

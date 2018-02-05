@@ -68,8 +68,8 @@ class Public extends Component {
 			      			<Typography type="title" color="inherit" className={this.props.classes.flex}>
 			      				Mammon
 			      			</Typography>
-			      				<Button onClick={this.handleRegister} color="contrast">Register</Button>
-			      				<Button onClick={this.handleClickOpen} color="contrast">Sign In</Button>
+			      				<Button onClick={this.handleRegister}  color="inherit">Register</Button>
+			      				<Button onClick={this.handleClickOpen} color="inherit">Sign In</Button>
 			      			<LoginService />
 			      			<AgentSelect />
 			      			<RegistrationTypeDialog/>

@@ -25,9 +25,9 @@ class CollapseToggle extends Component {
 		return expanded ? expanded.some(i=>i===item) : false;
 	}
 	render() {
-		let {expanded, item, onClick, className} = this.props;
+		let {expanded, item, onClick, className, more, less} = this.props;
 		return (<IconButton onClick={onClick} className={className}>
-			{this.expanded(expanded, item) ? <ExpandMore/>:<ExpandLess/>}
+			{this.expanded(expanded, item) ? (more?more:<ExpandMore/>):(less?less:<ExpandLess/>)}
 		</IconButton>);
 	}
 }

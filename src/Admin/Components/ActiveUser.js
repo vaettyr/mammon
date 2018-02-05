@@ -51,7 +51,7 @@ class ActiveUser extends Component {
 				<KeyboardArrowDownIcon/>
 			</IconButton>}
 			<Menu id="agents" anchorEl={this.props.agentsMenu.anchor} 
-				open={this.props.agentsMenu.open} onRequestClose={() => {this.props.hideMenu('agents')}}>
+				open={this.props.agentsMenu.open||false} onClose={() => {this.props.hideMenu('agents')}}>
 				{agents.map((item, index) =>(
 					<MenuItem key={index} onClick={()=>{this.props.setAgent(item, this.props.history)}}>
 						<ListItemAvatar>

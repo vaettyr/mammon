@@ -1,7 +1,9 @@
 import * as actions from 'Store/actionTypes';
 import * as http from 'axios';
-import { structureToString, dataToString, structureFromString, dataFromString } from './util';
+import { structureToString, structureFromString, serializeData, deserializeData } from './util';
 
+
+const serializeParameters = ["Data", "Actions", "Parameters"];
 //no alias needed. no index needed
 //const saveData = (table, alias, data, index, callback) => {
 const saveData = (uri = 'DataService.php', table, data, query, callback) => {
@@ -11,7 +13,7 @@ const saveData = (uri = 'DataService.php', table, data, query, callback) => {
 			source: table
 		});
 		let {ID, VERSION, ...Rest} = data;
-		data = dataToString(structureToString(Rest));
+		data = serializeData(structureToString(Rest), serializeParameters);
 		var qstring = "table="+table+(ID ? "&ID="+ID : "")+(VERSION ? "&VERSION="+VERSION : "");
 		if(query) {
 			qstring += Object.keys(query).map(i => "&"+i+"="+query[i]).join('');
@@ -21,7 +23,7 @@ const saveData = (uri = 'DataService.php', table, data, query, callback) => {
 			dispatch({
 				type: actions.SAVE_DATA_END,
 				source: table,
-				data: dataFromString(structureFromString(response.data[0]))
+				data: deserializeData(structureFromString(response.data[0]), serializeParameters)
 			});
 			if(callback) {
 				callback(response);

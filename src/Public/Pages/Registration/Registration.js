@@ -92,10 +92,15 @@ const removeListItem = (type, index, callback) => {
 const saveRegistration = (data, type) => {
 	return function (dispatch, getState) {
 		//parse through our structure and decide what to do with it and how to save it.
-		let registration = new DataObject(type.Structure, 'Registration', 'Registration.php');
+		//let registration = new DataObject(type.Structure, 'Registration', 'Registration.php');
+		let registration = new DataObject(type.Structure, 1);
+		debugger; //we might not need to serialize in here
 		let registrationData = registration.serialize(data);
 		registrationData.CommitteeType = type.ID;
+		
+		registration.on(registrationData, 'Submit');
 		//freeze the screen
+		/*
 		registration.save(dispatch, registrationData,{then: (response) => {
 			debugger;
 			//redirect to the success confirmation screen
@@ -103,6 +108,7 @@ const saveRegistration = (data, type) => {
 			debugger;
 			//display an error message. Maybe let them try again later
 		}});
+		*/
 	}
 }
 

@@ -1,4 +1,4 @@
-export const required = (value) => (value === '' || value === undefined);
+export const required = (value) => (value === '' || value === undefined || value === null);
 export const unique = (value, list) => (list && list.some(i => i === value));
 export const option = (value, options) => (value && !(options && options.some(o => o.value === value && !o.disabled)));
 export const phone = (value) => !(/\([0-9][\d]{2}\)\s[\d]{3}-[\d]{4}/).test(value);

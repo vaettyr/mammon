@@ -1,12 +1,13 @@
 import * as actions from 'Store/actionTypes';
 import * as http from 'axios';
-
+const endpoint = "DataSource.php";
+//this creates an instance of a DataSource
 class DataObject {
 	constructor(structure, type, endpoint) {
 		this.structure = structure;
 		this.type = type;
-		if(endpoint)
-			this.endpoint = endpoint;
+		//if(endpoint)
+		//	this.endpoint = endpoint;
 	}
 	
 	serialize(data) {
@@ -74,6 +75,14 @@ class DataObject {
 	deserialize(data) {
 		//takes data from the server and parses back out to our structure
 		return data;
+	}
+	
+	on(data, trigger) {
+		let query = "?source="+this.type+"&trigger="+trigger;
+		http.post(process.env.REACT_APP_API + endpoint+query, data)
+		.then(response => {
+			debugger;
+		});
 	}
 	
 	save(dispatch, data, config) {

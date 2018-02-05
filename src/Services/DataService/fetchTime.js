@@ -16,7 +16,7 @@ const fetchTime = (uri = "DataService.php", dispatch, alias, table, query, state
 			table: alias,
 			source: table
 		});
-		return {last_change:Date.parse(response.data.last_change.date), last_fetch: state.data[alias].timestamp};
+		return {last_change:response.data.last_change?Date.parse(response.data.last_change.date):false, last_fetch: state.data[alias].timestamp};
 	})
 	.catch(error => {
 		dispatch({

@@ -30,11 +30,16 @@ export const DELETE_DATA_END = "data/DELETE_END";
 export const DELETE_DATA_ERROR = "data/DELETE_ERROR";
 export const CLEAN_DATA = "data/CLEAN";
 export const AUGMENT_DATA = "data/AUGMENT";
+//data source
+export const GET_DATA_SOURCE_START = "datasource/READ_START";
+export const GET_DATA_SOURCE_END = 'datasource/READ_END';
+export const GET_DATA_SOURCE_ERROR = 'datasource/READ_ERROR';
 //form actions
 export const FORM_SET_VALUES = 'form/SET_VALUES';
 export const FORM_SET_VALUE = 'form/SET_VALUE';
 export const FORM_CLEAR_VALUES = 'form/CLEAR_VALUES';
 export const FORM_LIST_ADD = 'form/ADD_LIST';
+export const FORM_LIST_INSERT = 'form/INSERT_LIST';
 export const FORM_LIST_REMOVE = 'form/REMOVE_LIST';
 export const FORM_LIST_SORT = "form/SORT_LIST";
 //form validation

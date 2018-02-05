@@ -11,7 +11,8 @@ const editCommitteeType = (type, index) => {
 
 const mapState = (state, ownProps) => ({
 	page: state.page && state.page.CommitteeTypes ? state.page.CommitteeTypes: {},
-	data: state.data
+	data: state.data,
+	activeType: state.form ? state.form.CommitteeType : {}
 });
 
 const mapDispatch = (dispatch, ownProps) => { return {

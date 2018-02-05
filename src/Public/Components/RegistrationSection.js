@@ -15,6 +15,7 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 
 import Field from 'Components/Field';
 import Form from 'Components/Form';
+import OfficeSelector from 'Components/OfficeSelector';
 import Conditions from 'Services/Conditions';
 
 
@@ -37,6 +38,10 @@ const style = (theme) => ({
 	},
 	email: {
 		flex: 1
+	},
+	office: {
+		flex: 1,
+		display:'flex'
 	},
 	checkbox: {
 		flex: 1
@@ -84,7 +89,7 @@ ${item.City}, ${item.State} ${item.Zip}` : '';
 	}
 	render() {
 		let { classes, section, registration, data, options, menu, editListItem, onChange,
-				hidden, optional, disabled, label, helpText, errors, officertypes } = this.props;
+				hidden, label, helpText, errors, officertypes, Offices, Jurisdictions } = this.props; //optional, disabled,
 		if(!hidden) {
 			return (<span>
 				<Typography type="headline">
@@ -99,10 +104,14 @@ ${item.City}, ${item.State} ${item.Zip}` : '';
 							return <Conditions className={classes[Type]} key={index} structure={registration.Structure} model={this.formatModel(item.Name, section.Name)}>
 										<Field key={index} label={item.Name} type={item.Type} model={this.formatModel(item.Name, section.Name)}/>
 									</Conditions>;
-						case 'reference':
+						case 'select':
 							return <Conditions className={classes[Type]} key={index} data={data} structure={registration.Structure} model={this.formatModel(item.Name, section.Name)}
 										options={options ? options.filter(i => i.LookupType === item.LookupType) : []}>
 								<Field key={index} label={item.Name} type="select" model={this.formatModel(item.Name, section.Name)}/></Conditions>;
+						case 'office':
+							return <Conditions className={classes[Type]} key={index} data={data} structure={registration.Structure} model={this.formatModel(item.Name, section.Name)}>
+									<OfficeSelector data={data} Offices={Offices} Jurisdictions={Jurisdictions} prefix={item.Name!=="Office"?item.Name:undefined} model={this.formatModel(section.Name)}/>
+								</Conditions>;
 						default:
 							return <Conditions className={classes[Type]} key={index} structure={registration.Structure} model={this.formatModel(item.Name, section.Name)}>
 										<Field key={index} label={item.Name} type={item.Type} model={this.formatModel(item.Name, section.Name)} priority={item.Type!=='address'?1:0}/>

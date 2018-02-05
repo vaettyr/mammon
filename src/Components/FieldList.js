@@ -14,23 +14,33 @@ class FieldList extends Component {
 	}
 }
 
-const mapState = (state, ownProps) => { return {
-	value: ownProps.model.replace(/\[(\w+)\]/g, '.$1').split('.').reduce((root, prop) => root && root[prop] ? root[prop] : '', state.form[ownProps.form])
+const mapState = (state, ownProps) => { 
+	let raw = ownProps.model.replace(/\[(\w+)\]/g, '.$1').split('.').reduce((root, prop) => root && root[prop] ? root[prop] : '', state.form[ownProps.form])||[];
+	return {
+	value: raw,
+	filtered: (callback) => {
+		let processed = raw.reduce((list, item, index) => {
+			if(!item.DELETE) {
+				list.push({item, index});
+			}
+			return list;
+		}, []);
+		let list = [];
+		processed.forEach((element, index) => list.push(callback(element.item, element.index, index)));
+		return list;
+	}
 }};
 
-const move = (from, to) => {
-	debugger;
-}
-
+const move = (from, to, form, model) => ({type:actions.FORM_LIST_SORT, key: model, form: form, from:from, to:to});
 const push = (item, form, model) => ({type: actions.FORM_LIST_ADD, item: item, form: form, key: model});
-const remove = (index, form, model) => ({type:actions.FORM_LIST_REMOVE, index: index, form: form, key: model});
+const remove = (index, form, model, soft) => ({type:actions.FORM_LIST_REMOVE, index: index, form: form, key: model, soft:soft});
 
 
 const mapDispatch = (dispatch, ownProps) => ({
-	move,
+	move: (index, direction) => {dispatch(move(index, index + direction, ownProps.form, ownProps.model))},
 	//pop,
 	push: (item) => {dispatch(push(item, ownProps.form, ownProps.model))},
-	remove: (index) => {dispatch(remove(index, ownProps.form, ownProps.model))},
+	remove: (index, soft) => {dispatch(remove(index, ownProps.form, ownProps.model, soft))},
 	//clear,
 	//shift, 
 	//unshift,

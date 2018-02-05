@@ -19,8 +19,8 @@ class NavMenu extends Component {
 		let { id, content, displayName, showMenu, hideMenu, nav, menu, history, staticContext, ...rest } = this.props;
 		return (<div>
 			<Button onClick={(e) => showMenu(e, id)} {...rest}>{displayName}</Button>
-			<Menu id={id} open={menu.open} anchorEl={menu.anchor}
-				onRequestClose={()=>{hideMenu(id)}}>
+			<Menu id={id} open={menu.open||false} anchorEl={menu.anchor}
+				onClose={()=>{hideMenu(id)}}>
 				{content.map((item, index) => (
 					item.permission ?	
 					<PermissionItem key={index} permission={item.permission}>

@@ -1,0 +1,28 @@
+{
+	"Name":"",
+	"DataSource":"",
+	"Data":{
+		"Header":{
+			"Type":"Header",
+			"ID":"Header",
+			"Display":"block",
+			"Children":[]
+		},
+		"Footer":{
+			"Type":"Footer",
+			"ID":"Footer",
+			"Display":"block",
+			"Children":[]
+		},
+		"Pages":[
+			{
+				"Type":"Page",
+				"ID":"Page0",
+				"Display":"block",
+				"Children":[]
+			}
+		],
+		"Size":"",
+		"Style":[]
+	}
+}

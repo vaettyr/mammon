@@ -72,7 +72,7 @@ const onClose = (history) => {
 
 const mapDispatchToProps = (dispatch, getState) => {
 	return {
-		onRequestClose: (history) => {dispatch(onClose(history))},
+		requestClose: (history) => {dispatch(onClose(history))},
 		onSignIn: (username, password, history, source) => { dispatch(signIn(username, password, history, source))}
 	}
 }

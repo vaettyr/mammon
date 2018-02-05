@@ -28,7 +28,7 @@ const getData = (uri, table, alias, params, callback) => {
 			fetchTime(uri, dispatch, alias, table, query, state)
 			.then((response) => {
 				//compare the time returned to the current state time
-				if(response.last_change > response.last_fetch) {
+				if(response.last_change > response.last_fetch || !response.last_change) {
 					fetchData(uri, dispatch, alias, table, query).then(response => {
 						if(callback) {callback(response);}
 					});
